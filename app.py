@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, request
+from flask import Flask, session, redirect, url_for, request, render_template
 import time as time
 
 import mysql.connector
@@ -30,10 +30,10 @@ def index():
             <h1>Välkommen, {username}!</h1>
             <p>Du är inloggad och behöver inte logga in igen när du klickar runt.</p>
             <ul>
-                <li><a href="/profile">Min profil</a></li>
-                <li><a href="/secret">Hemlig sida (kräver inloggning)</a></li>
-                <li><a href="/logout">Logga ut</a></li>
-                <li><a href="/posts">Skapa inlägg</a></li>
+                <button><a href="/profile">Min profil</a></button>
+                <button><a href="/posts">Skapa inlägg</a></button>
+                <br>
+                <button><a href="/logout">Logga ut</a></button>
             </ul>
         '''
     else:
@@ -154,27 +154,7 @@ def profile():
     name = user[0] if user else "Namn ej angivet"
     cursor.close()
 
-    return '''
-        <h1>Min profil</h1>
-        <p>Username: {username}</p>
-        <p>Name: {name}</p>
-        <button><a href="/">Tillbaka</a></button>
-    '''.format(username=username, name=name)
-
-
-
-@app.route('/secret')
-def secret():
-    # Exempel på en skyddad sida
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    return f'''
-        <h1>🔒 Hemlig sida</h1>
-        <p>Bara {session['username']} kan se detta.</p>
-        <button><a href="/">Tillbaka</a></button>
-    '''
-
+    return render_template('profile.html', username=username, name=name)
 
 @app.route('/logout')
 def logout():

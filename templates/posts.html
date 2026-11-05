@@ -16,16 +16,18 @@
     <h1>Create post</h1>
     <form method="post">
       Post: <input type="text" name="post" /><br />
-      <input type="submit" value="Skicka" />
+      <input type="submit" value="Send" />
     </form>
 
-    <button><a href="/">Tillbaka</a></button>
+    <button><a href="/">Back</a></button>
 
-    <h2>Alla inlägg</h2>
-    <ul>
-      {% for post in posts %}
-      <li><strong>{{ post[0] }}</strong> : {{ post[1] }} <br/> <time>({{ post[2] }})</time></li>
-      {% endfor %}
-    </ul>
+    <main>
+      <h2>All posts</h2>
+      <ul>
+        {% for post in posts %}
+        <li><strong>{{ post[0] }}</strong> : {{ post[1] }} <br/> <time>({{ post[2] }})</time></li>
+        {% endfor %}
+      </ul>
+    </main>
   </body>
 </html>

@@ -14,9 +14,36 @@
     />
   </head>
   <body>
-    <h1>My Profile</h1>
-    <p>Name: {{ name }}</p>
-    <p>Username: {{ username }}</p>
+    <main>
+      <h1>My Profile</h1>
+      <p>
+        Name: {{ name }}
+        <button class="edit">
+          <img
+            src="{{url_for('static', filename='edit-svgrepo-com.svg') }}"
+            alt="Edit"
+          />
+        </button>
+      </p>
+      <p>
+        Username: {{ username }}
+        <button class="edit">
+          <img
+            src="{{url_for('static', filename='edit-svgrepo-com.svg') }}"
+            alt="Edit"
+          />
+        </button>
+      </p>
+      <p>
+        Password
+        <button class="edit">
+          <img
+            src="{{url_for('static', filename='edit-svgrepo-com.svg') }}"
+            alt="Edit"
+          />
+        </button>
+      </p>
+    </main>
     <br />
     <a href="/"><button>Back</button></a>
   </body>

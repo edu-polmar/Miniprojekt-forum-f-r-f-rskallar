@@ -80,6 +80,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['passwd']
+        name = request.form['name']
 
         # Kolla om användaren redan finns
         cursor = db.cursor()
@@ -91,7 +92,7 @@ def register():
             return 'Användarnamnet är redan taget. <a href="/register">Försök igen</a>'
 
         # Lägg till ny användare i databasen
-        cursor.execute("INSERT INTO users (username, passwd) VALUES (%s, %s)", (username, password))
+        cursor.execute("INSERT INTO users (username, passwd, name) VALUES (%s, %s, %s)", (username, password, name))
         db.commit()
         cursor.close()
 
@@ -103,6 +104,7 @@ def register():
         <form method="post">
             Användarnamn: <input type="text" name="username"><br>
             Lösenord:     <input type="password" name="passwd"><br>
+            Name:         <input type="text" name="name"><br>
             <input type="submit" value="Registrera">
         </form>
     '''
@@ -133,14 +135,32 @@ def make_posts():
                 <input type="submit" value="Skicka">
             </form>
 
-            <p><a href="/">Tillbaka</a></p>
+            <button><a href="/">Tillbaka</a></button>
 
             <h2>Alla inlägg</h2>
             <ul>
     ''' + ''.join(f'<li><strong>{post[0]}</strong> ({post[2]}): {post[1]}</li>' for post in get_all_posts()) + '''
         '''
 
-    
+@app.route('/profile', methods=['GET'])
+def profile():
+    if 'username' not in session:
+        return redirect(url_for('login'))  # Inte inloggad – skicka till login
+
+    username = session['username']
+    cursor = db.cursor()
+    cursor.execute("SELECT name FROM users WHERE username = %s", (username,))
+    user = cursor.fetchone()
+    name = user[0] if user else "Namn ej angivet"
+    cursor.close()
+
+    return '''
+        <h1>Min profil</h1>
+        <p>Username: {username}</p>
+        <p>Name: {name}</p>
+        <button><a href="/">Tillbaka</a></button>
+    '''.format(username=username, name=name)
+
 
 
 @app.route('/secret')
@@ -152,7 +172,7 @@ def secret():
     return f'''
         <h1>🔒 Hemlig sida</h1>
         <p>Bara {session['username']} kan se detta.</p>
-        <p><a href="/">Tillbaka</a></p>
+        <button><a href="/">Tillbaka</a></button>
     '''
 
 

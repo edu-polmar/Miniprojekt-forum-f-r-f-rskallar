@@ -1,4 +1,5 @@
 from flask import Flask, session, redirect, url_for, request
+import time as time
 
 import mysql.connector
 
@@ -12,8 +13,12 @@ db = mysql.connector.connect(
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Används för sessionshantering
 
-
-
+def get_all_posts():
+    cursor = db.cursor()
+    cursor.execute("SELECT author, post, time FROM posts ORDER BY time DESC")
+    posts = cursor.fetchall()
+    cursor.close()
+    return posts
 
 @app.route('/')
 def index():
@@ -21,8 +26,6 @@ def index():
 
     if username:
         # Anpassat innehåll för inloggad användare
-        cursor = db.cursor()
-        cursor.close()
         return f'''
             <h1>Välkommen, {username}!</h1>
             <p>Du är inloggad och behöver inte logga in igen när du klickar runt.</p>
@@ -30,6 +33,7 @@ def index():
                 <li><a href="/profile">Min profil</a></li>
                 <li><a href="/secret">Hemlig sida (kräver inloggning)</a></li>
                 <li><a href="/logout">Logga ut</a></li>
+                <li><a href="/posts">Skapa inlägg</a></li>
             </ul>
         '''
     else:
@@ -103,17 +107,40 @@ def register():
         </form>
     '''
 
-
-@app.route('/profile')
-def profile():
-    username = session.get('username')
-    if not username:
+@app.route('/posts', methods=['GET', 'POST'])
+def make_posts():
+    if 'username' not in session:
         return redirect(url_for('login'))  # Inte inloggad – skicka till login
 
-    return f'''
-        <h1>Profil för {username}</h1>
-        <p><a href="/">Tillbaka</a></p>
-    '''
+
+    if request.method == 'POST':
+        post_content = request.form['post']
+        timestamp = time.localtime()  # Du kan lägga till en tidsstämpel om du vill
+        author = session['username']
+
+        # Spara inlägget i databasen
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO posts (author, post, time) VALUES (%s, %s, %s)", (author, post_content, timestamp))
+        db.commit()
+        cursor.close()
+
+        return redirect(url_for('make_posts'))  # Skicka tillbaka till startsidan efter inlägg
+
+    return '''
+            <h1>Create post</h1>
+            <form method="post">
+                Post: <input type="text" name="post"><br>
+                <input type="submit" value="Skicka">
+            </form>
+
+            <p><a href="/">Tillbaka</a></p>
+
+            <h2>Alla inlägg</h2>
+            <ul>
+    ''' + ''.join(f'<li><strong>{post[0]}</strong> ({post[2]}): {post[1]}</li>' for post in get_all_posts()) + '''
+        '''
+
+    
 
 
 @app.route('/secret')

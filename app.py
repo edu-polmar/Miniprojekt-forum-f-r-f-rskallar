@@ -69,6 +69,38 @@ def login():
         <p><i>Testa: alice/katt123 eller bob/hund456</i></p>
     '''
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['passwd']
+
+        # Kolla om användaren redan finns
+        cursor = db.cursor()
+        cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
+        existing_user = cursor.fetchone()
+
+    if existing_user:
+        cursor.close()
+        return 'Användarnamnet är redan taget. <a href="/register">Försök igen</a>'
+
+        # Lägg till ny användare i databasen
+        cursor.execute("INSERT INTO users (username, passwd) VALUES (%s, %s)", (username, password))
+        db.commit()
+        cursor.close()
+
+    return 'Registrering lyckades! <a href="/login">Logga in</a>'
+
+    # GET: visa registreringsformuläret
+    return '''
+        <h1>Registrera dig</h1>
+        <form method="post">
+            Användarnamn: <input type="text" name="username"><br>
+            Lösenord:     <input type="password" name="passwd"><br>
+            <input type="submit" value="Registrera">
+        </form>
+    '''
+
 
 @app.route('/profile')
 def profile():

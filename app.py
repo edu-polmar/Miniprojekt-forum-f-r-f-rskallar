@@ -37,6 +37,8 @@ def index():
             <h1>Inte inloggad</h1>
             <p>Du måste logga in för att se mer.</p>
             <a href="/login">Logga in</a>
+            <p>Eller registrera dig:</p>
+            <a href="/register">Registrera dig</a>
         '''
 
 
@@ -80,16 +82,16 @@ def register():
         cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
         existing_user = cursor.fetchone()
 
-    if existing_user:
-        cursor.close()
-        return 'Användarnamnet är redan taget. <a href="/register">Försök igen</a>'
+        if existing_user:
+            cursor.close()
+            return 'Användarnamnet är redan taget. <a href="/register">Försök igen</a>'
 
         # Lägg till ny användare i databasen
         cursor.execute("INSERT INTO users (username, passwd) VALUES (%s, %s)", (username, password))
         db.commit()
         cursor.close()
 
-    return 'Registrering lyckades! <a href="/login">Logga in</a>'
+        return 'Registrering lyckades! <a href="/login">Logga in</a>'
 
     # GET: visa registreringsformuläret
     return '''

@@ -26,25 +26,9 @@ def index():
 
     if username:
         # Anpassat innehåll för inloggad användare
-        return f'''
-            <h1>Välkommen, {username}!</h1>
-            <p>Du är inloggad och behöver inte logga in igen när du klickar runt.</p>
-            <ul>
-                <button><a href="/profile">Min profil</a></button>
-                <button><a href="/posts">Skapa inlägg</a></button>
-                <br>
-                <button><a href="/logout">Logga ut</a></button>
-            </ul>
-        '''
+        return render_template('index.html', username=username)
     else:
-        return '''
-            <h1>Inte inloggad</h1>
-            <p>Du måste logga in för att se mer.</p>
-            <a href="/login">Logga in</a>
-            <p>Eller registrera dig:</p>
-            <a href="/register">Registrera dig</a>
-        '''
-
+        return render_template('home.html', username=None)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,18 +46,10 @@ def login():
             session['username'] = username   # <-- Här skapas sessionen!
             return redirect(url_for('index'))
         else:
-            return 'Fel användarnamn eller lösenord. <a href="/login">Försök igen</a>'
+            return '<p style="position:absolute; left:50%; top:20%; transform:translate(-50%, -80%)">Invalid username or password.<br/> <a href="/login">Try again</a></p>'
 
     # GET: visa formuläret
-    return '''
-        <h1>Logga in</h1>
-        <form method="post">
-            Användarnamn: <input type="text" name="username"><br>
-            Lösenord:     <input type="password" name="passwd"><br>
-            <input type="submit" value="Logga in">
-        </form>
-        <p><i>Testa: alice/katt123 eller bob/hund456</i></p>
-    '''
+    return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -128,19 +104,7 @@ def make_posts():
 
         return redirect(url_for('make_posts'))  # Skicka tillbaka till startsidan efter inlägg
 
-    return '''
-            <h1>Create post</h1>
-            <form method="post">
-                Post: <input type="text" name="post"><br>
-                <input type="submit" value="Skicka">
-            </form>
-
-            <button><a href="/">Tillbaka</a></button>
-
-            <h2>Alla inlägg</h2>
-            <ul>
-    ''' + ''.join(f'<li><strong>{post[0]}</strong> ({post[2]}): {post[1]}</li>' for post in get_all_posts()) + '''
-        '''
+    return render_template('posts.html', posts=get_all_posts())
 
 @app.route('/profile', methods=['GET'])
 def profile():

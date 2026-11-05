@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Not logged in</h1>
+    <p>
+      You are not logged in. Please log in to access your profile and create
+      posts.
+    </p>
+    <ul>
+      <li>
+        <button><a href="/login">Log In</a></button>
+      </li>
+      <li>
+        <button><a href="/register">Register</a></button>
+      </li>
+    </ul>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='posts.css') }}"
+  </head>
+  <body>
+    <h1>Create post</h1>
+    <form method="post">
+      Post: <input type="text" name="post" /><br />
+      <input type="submit" value="Skicka" />
+    </form>
+
+    <button><a href="/">Tillbaka</a></button>
+
+    <h2>Alla inlägg</h2>
+    <ul>
+      {% for post in posts %}
+      <li><strong>{{ post[0] }}</strong> : {{ post[1] }} <br/> <time>({{ post[2] }})</time></li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

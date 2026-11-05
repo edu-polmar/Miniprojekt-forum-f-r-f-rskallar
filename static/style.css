@@ -26,3 +26,26 @@ button a {
 button:hover {
   background-color: #3b5a8c;
 }
+
+ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  list-style-type: none;
+}
+
+input[type="submit"] {
+  background-color: #4c75af;
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

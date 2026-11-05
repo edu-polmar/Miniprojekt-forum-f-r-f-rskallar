@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Welcome, {{ username }}!</h1>
+    <p>
+      You are logged in and won't need to log in again when you click around.
+    </p>
+    <ul>
+      <button><a href="/profile">My Profile</a></button>
+      <button><a href="/posts">Create Post</a></button>
+
+      <br />
+      <button><a href="/logout">Log Out</a></button>
+    </ul>
+  </body>
+</html>
